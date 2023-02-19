@@ -18,21 +18,22 @@
 // Inspired from
 // https://github.com/Tampermonkey/tampermonkey/issues/1279#issuecomment-875386821
 const runWhenReady = (elementFinder, callback) => {
-  let numAttempts = 0;
-  const tryNow = () => {
+  const tryNow = (attempt = 0) => {
     const el = elementFinder();
     const elFound = el.length > 0;
 
     if (elFound) {
       callback();
     } else {
-      numAttempts++;
-      if (numAttempts >= 34) {
+      if (attempt == 33) {
         console.warn(
-          `Couldn't find any matching elements after ${numAttempts} attempts, giving up.`
+          `Couldn't find any matching elements after ${attempt} attempts, giving up.`
         );
       } else {
-        setTimeout(tryNow, 250 * Math.pow(1.1, numAttempts));
+        setTimeout(
+          tryNow.apply(null, attempt + 1),
+          250 * Math.pow(1.1, attempt)
+        );
       }
     }
   };
