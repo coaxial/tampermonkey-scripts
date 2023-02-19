@@ -12,23 +12,25 @@
 
 "use strict";
 
-// Some content is loaded later, this checks if reviews have been loaded yet
-// before running transformations on them.
+// Checks if the page is ready done loading the elements to modify before
+// operating on them.
 // Gives up after a minute.
 // Inspired from
 // https://github.com/Tampermonkey/tampermonkey/issues/1279#issuecomment-875386821
 function runWhenReady(elementFinder, callback) {
   const numAttempts = 0;
   const tryNow = function () {
-    const reviews = elementFinder();
-    const reviewsFound = reviews.length > 0;
+    const el = elementFinder();
+    const elFound = el.length > 0;
 
-    if (reviewsFound) {
-      callback(reviews);
+    if (elFound) {
+      callback();
     } else {
       numAttempts++;
       if (numAttempts >= 34) {
-        console.warn("Giving up after 34 attempts. Could not find any reviews");
+        console.warn(
+          `Couldn't find any matching elements after ${numAttemps}, giving up.`
+        );
       } else {
         setTimeout(tryNow, 250 * Math.pow(1.1, numAttempts));
       }
@@ -38,6 +40,12 @@ function runWhenReady(elementFinder, callback) {
   tryNow();
 }
 
+function findDates() {
+  const dateElClasses = ["jss89", "jss119", "jss99"].join(".");
+
+  return [...document.querySelectorAll(dateElClasses)];
+}
+
 function findReviews() {
   // reviews are within `p` elements, but not all `p` are reviews.
   return [...document.querySelectorAll("p")].filter((e) =>
@@ -45,8 +53,8 @@ function findReviews() {
   );
 }
 
-function addLinks(reviews) {
-  reviews.map((e) => {
+function addLinks() {
+  findReviews().map((e) => {
     // Match current page language to link to the item in the corresponding
     // language.
     const lang = location.toString().match(/(fr|de|it|en)/)[0];
@@ -59,4 +67,9 @@ function addLinks(reviews) {
   });
 }
 
-runWhenReady(findReviews, addLinks);
+// Ricardo does very "interesting" things to the page. One such interesting
+// thing is to load review dates much later, which deletes and recreates
+// the item number elements once the date has been loaded.
+// Therefore, we must wait for the dates to load, and for the item number
+// elements to be removed and recreated before modifying them.
+runWhenReady(findDates, addLinks);
