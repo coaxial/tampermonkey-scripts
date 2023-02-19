@@ -28,9 +28,7 @@ function runWhenReady(elementFinder, callback) {
     } else {
       numAttempts++;
       if (numAttempts >= 34) {
-        console.warn(
-          "Giving up after 34 attempts. Could not find: " + readySelector
-        );
+        console.warn("Giving up after 34 attempts. Could not find any reviews");
       } else {
         setTimeout(tryNow, 250 * Math.pow(1.1, numAttempts));
       }
