@@ -52,6 +52,21 @@ const findReviews = () => {
   );
 };
 
+const ricardoCantCss = () => {
+  // Remove useless negative margins so that the item number isn't covered by
+  // another element and is clickable. CSS is hard I guess.
+  findDates.map((el) => {
+    el.parentElement.style = {
+      "padding-top": 0,
+      "padding-left": 0,
+    };
+    el.parentElement.parentElement.style = {
+      "margin-top": 0,
+      "margin-left": 0,
+    };
+  });
+};
+
 const addLinks = () => {
   findReviews().map((e) => {
     // Match current page language to link to the item in the corresponding
@@ -63,6 +78,7 @@ const addLinks = () => {
     anchor.innerText = artNum;
     e.innerText = e.innerText.replace(artNum, "");
     e.insertAdjacentElement("beforeEnd", anchor);
+    ricardoCantCss();
   });
 };
 
