@@ -17,9 +17,9 @@
 // Gives up after a minute.
 // Inspired from
 // https://github.com/Tampermonkey/tampermonkey/issues/1279#issuecomment-875386821
-function runWhenReady(elementFinder, callback) {
+const runWhenReady = (elementFinder, callback) => {
   let numAttempts = 0;
-  const tryNow = function () {
+  const tryNow = () => {
     const el = elementFinder();
     const elFound = el.length > 0;
 
@@ -38,23 +38,23 @@ function runWhenReady(elementFinder, callback) {
   };
 
   tryNow();
-}
+};
 
-function findDates() {
+const findDates = () => {
   // Array.prototype.join only inserts between elements but doesn't prepend.
   const dateElClasses = `.${["jss89", "jss119", "jss99"].join(".")}`;
 
   return [...document.querySelectorAll(dateElClasses)];
-}
+};
 
-function findReviews() {
+const findReviews = () => {
   // reviews are within `p` elements, but not all `p` are reviews.
   return [...document.querySelectorAll("p")].filter((e) =>
     new RegExp("(N° d'article|Art.-Nr.|No.-art.) [0-9]+", "g").test(e.innerText)
   );
-}
+};
 
-function addLinks() {
+const addLinks = () => {
   findReviews().map((e) => {
     // Match current page language to link to the item in the corresponding
     // language.
@@ -66,7 +66,7 @@ function addLinks() {
     e.innerText = e.innerText.replace(artNum, "");
     e.insertAdjacentElement("beforeEnd", anchor);
   });
-}
+};
 
 // Ricardo does very "interesting" things to the page. One such interesting
 // thing is to load review dates much later, which deletes and recreates
