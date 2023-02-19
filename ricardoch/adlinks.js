@@ -31,7 +31,7 @@ const runWhenReady = (elementFinder, callback) => {
         );
       } else {
         setTimeout(
-          tryNow.apply(null, attempt + 1),
+          tryNow.apply(null, [attempt + 1]),
           250 * Math.pow(1.1, attempt)
         );
       }
