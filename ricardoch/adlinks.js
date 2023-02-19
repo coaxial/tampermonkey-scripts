@@ -27,7 +27,7 @@ const runWhenReady = (elementFinder, callback) => {
     } else {
       if (attempt == 33) {
         console.warn(
-          `Couldn't find any matching elements after ${attempt} attempts, giving up.`
+          `No matching elements after ${attempt} attempts, giving up.`
         );
       } else {
         setTimeout(() => tryNow(attempt + 1), 250 * Math.pow(1.1, attempt));
@@ -54,7 +54,8 @@ const findReviews = () => {
 
 const ricardoCantCss = () => {
   // Remove useless negative margins so that the item number isn't covered by
-  // another element and is clickable. CSS is hard I guess.
+  // another element and is clickable.
+  // CSS is hard I guess.
   findDates().map((el) => {
     el.parentElement.style["padding-top"] = 0;
     el.parentElement.style["padding-left"] = 0;
@@ -74,13 +75,14 @@ const addLinks = () => {
     anchor.innerText = artNum;
     e.innerText = e.innerText.replace(artNum, "");
     e.insertAdjacentElement("beforeEnd", anchor);
+    // Make item numbers clickable.
     ricardoCantCss();
   });
 };
 
-// Ricardo does very "interesting" things to the page. One such interesting
-// thing is to load review dates much later, which deletes and recreates
-// the item number elements once the date has been loaded.
-// Therefore, we must wait for the dates to load, and for the item number
-// elements to be removed and recreated before modifying them.
+// Ricardo does things in a very "interesting" way. One such interesting thing
+// is to load review dates much later, then delete and immediately recreate the
+// item number elements once the date has been loaded. Therefore, we must wait
+// for the dates to load and for the item number elements to be removed and
+// recreated before modifying them.
 runWhenReady(findDates, addLinks);
