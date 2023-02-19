@@ -29,7 +29,7 @@ function runWhenReady(elementFinder, callback) {
       numAttempts++;
       if (numAttempts >= 34) {
         console.warn(
-          `Couldn't find any matching elements after ${numAttempts}, giving up.`
+          `Couldn't find any matching elements after ${numAttempts} attempts, giving up.`
         );
       } else {
         setTimeout(tryNow, 250 * Math.pow(1.1, numAttempts));
@@ -41,7 +41,8 @@ function runWhenReady(elementFinder, callback) {
 }
 
 function findDates() {
-  const dateElClasses = ["jss89", "jss119", "jss99"].join(".");
+  // Array.prototype.join only inserts between elements but doesn't prepend.
+  const dateElClasses = `.${["jss89", "jss119", "jss99"].join(".")}`;
 
   return [...document.querySelectorAll(dateElClasses)];
 }
