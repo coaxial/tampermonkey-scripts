@@ -30,10 +30,7 @@ const runWhenReady = (elementFinder, callback) => {
           `Couldn't find any matching elements after ${attempt} attempts, giving up.`
         );
       } else {
-        setTimeout(
-          tryNow.apply(null, [attempt + 1]),
-          250 * Math.pow(1.1, attempt)
-        );
+        setTimeout(() => tryNow(attempt + 1), 250 * Math.pow(1.1, attempt));
       }
     }
   };
