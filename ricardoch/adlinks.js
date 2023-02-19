@@ -40,7 +40,7 @@ function runWhenReady(elementFinder, callback) {
 
 function findReviews() {
   // reviews are within `p` elements, but not all `p` are reviews.
-  [...document.querySelectorAll("p")].filter((e) =>
+  return [...document.querySelectorAll("p")].filter((e) =>
     new RegExp("(N° d'article|Art.-Nr.|No.-art.) [0-9]+", "g").test(e.innerText)
   );
 }
