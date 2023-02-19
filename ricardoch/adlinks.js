@@ -18,7 +18,7 @@
 // Inspired from
 // https://github.com/Tampermonkey/tampermonkey/issues/1279#issuecomment-875386821
 function runWhenReady(elementFinder, callback) {
-  const numAttempts = 0;
+  let numAttempts = 0;
   const tryNow = function () {
     const el = elementFinder();
     const elFound = el.length > 0;
