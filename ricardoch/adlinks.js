@@ -29,7 +29,7 @@ function runWhenReady(elementFinder, callback) {
       numAttempts++;
       if (numAttempts >= 34) {
         console.warn(
-          `Couldn't find any matching elements after ${numAttemps}, giving up.`
+          `Couldn't find any matching elements after ${numAttempts}, giving up.`
         );
       } else {
         setTimeout(tryNow, 250 * Math.pow(1.1, numAttempts));
