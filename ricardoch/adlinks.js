@@ -64,6 +64,15 @@ const ricardoCantCss = () => {
   });
 };
 
+const callback = (mutationList, observer) => {
+  for (const mutation in mutationList) {
+    if (mutation.type === "childList") {
+      console.debug("reviews added/removed");
+    }
+  }
+};
+const observer = new MutationObserver(callback);
+
 const addLinks = () => {
   findReviews().map((e) => {
     // Match current page language to link to the item in the corresponding
@@ -98,14 +107,6 @@ const reviewsContainerNode = () => {
     ".MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation1.MuiCard-root.MuiGrid-root.MuiGrid-item"
   );
 };
-const callback = (mutationList, observer) => {
-  for (const mutation in mutationList) {
-    if (mutation.type === "childList") {
-      console.debug("reviews added/removed");
-    }
-  }
-};
-const observer = new MutationObserver(callback);
 
 // Ricardo does things in a very "interesting" way. One such interesting thing
 // is to load review dates much later, then delete and immediately recreate the
