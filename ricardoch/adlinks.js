@@ -78,7 +78,8 @@ const addLinks = () => {
     // Make item numbers clickable.
     ricardoCantCss();
     // Whenever the user goes to the next page of reviews, run the script again.
-    findPaginator().addEventListener("click", paginatorClickHandler);
+    // findPaginator().addEventListener("click", paginatorClickHandler);
+    observer.observe(reviewsContainerNode, { childList: true });
   });
 };
 
@@ -91,6 +92,20 @@ const findPaginator = () =>
 function paginatorClickHandler() {
   runWhenReady(findDates, addLinks);
 }
+
+const reviewsContainerNode = () => {
+  document.querySelector(
+    ".MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation1.MuiCard-root.MuiGrid-root.MuiGrid-item"
+  );
+};
+const callback = (mutationList, observer) => {
+  for (const mutation in mutationList) {
+    if (mutation.type === "childList") {
+      console.debug("reviews added/removed");
+    }
+  }
+};
+const observer = new MutationObserver(callback);
 
 // Ricardo does things in a very "interesting" way. One such interesting thing
 // is to load review dates much later, then delete and immediately recreate the
