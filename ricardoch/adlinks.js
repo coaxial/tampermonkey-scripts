@@ -77,9 +77,6 @@ const addLinks = () => {
     e.insertAdjacentElement("beforeEnd", anchor);
     // Make item numbers clickable.
     ricardoCantCss();
-    // Whenever the user goes to the next page of reviews, run the script again.
-    // findPaginator().addEventListener("click", paginatorClickHandler);
-    observer.observe(reviewsContainerNode(), { childList: true });
   });
 };
 
@@ -103,17 +100,24 @@ const reviewsContainerNode = () => {
     "MuiGrid-root",
     "MuiGrid-item",
   ];
-  return document.querySelector(`.${classes.join(".")}`);
+  return document.querySelector(`.${classes.join(".")}`).parentElement
+    .parentElement;
 };
 
 const callback = (mutationList, observer) => {
   for (const mutation in mutationList) {
-    if (mutation.type === "childList") {
-      console.debug("reviews added/removed");
+    const reviewRemoved =
+      mutation.type === "childList" && mutation.removedNodes.length === 0;
+    if (reviewRemoved) {
+      console.debug({ mutation });
+      console.debug("review removed");
     }
   }
 };
 const observer = new MutationObserver(callback);
+// Whenever the user goes to the next page of reviews, run the script again.
+// findPaginator().addEventListener("click", paginatorClickHandler);
+observer.observe(reviewsContainerNode(), { childList: true });
 
 // Ricardo does things in a very "interesting" way. One such interesting thing
 // is to load review dates much later, then delete and immediately recreate the
