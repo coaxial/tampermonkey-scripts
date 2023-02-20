@@ -105,14 +105,15 @@ const reviewsContainerNode = () => {
 };
 
 const callback = (mutationList, observer) => {
-  for (const mutation in mutationList) {
-    const reviewRemoved =
-      mutation.type === "childList" && mutation.removedNodes.length === 0;
-    if (reviewRemoved) {
+  mutationList.forEach((mutation) => {
+    const reviewListMutated =
+      mutation.type === "childList" && mutation.addedNodes.length > 0;
+    if (reviewListMutated) {
       console.debug({ mutation });
-      console.debug("review removed");
+      console.debug("reviews mutated");
+      runWhenReady(findDates, addLinks);
     }
-  }
+  });
 };
 const observer = new MutationObserver(callback);
 // Whenever the user goes to the next page of reviews, run the script again.
