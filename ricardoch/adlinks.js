@@ -79,7 +79,7 @@ const addLinks = () => {
     ricardoCantCss();
     // Whenever the user goes to the next page of reviews, run the script again.
     // findPaginator().addEventListener("click", paginatorClickHandler);
-    observer.observe(reviewsContainerNode, { childList: true });
+    observer.observe(reviewsContainerNode(), { childList: true });
   });
 };
 
@@ -103,7 +103,7 @@ const reviewsContainerNode = () => {
     "MuiGrid-root",
     "MuiGrid-item",
   ];
-  return document.getElementsByClassName(classes.join(" "))[0];
+  return document.querySelector(`.${classes.join(".")}`);
 };
 
 const callback = (mutationList, observer) => {
