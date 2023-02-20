@@ -77,6 +77,8 @@ const addLinks = () => {
     e.insertAdjacentElement("beforeEnd", anchor);
     // Make item numbers clickable.
     ricardoCantCss();
+    // Whenever the user goes to the next page of reviews, run the script again.
+    findPaginator().addEventListener("click", paginatorClickHandler);
   });
 };
 
@@ -96,5 +98,3 @@ function paginatorClickHandler() {
 // for the dates to load and for the item number elements to be removed and
 // recreated before modifying them.
 runWhenReady(findDates, addLinks);
-// Whenever the user goes to the next page of reviews, run the script again.
-findPaginator().addEventListener("click", paginatorClickHandler);
