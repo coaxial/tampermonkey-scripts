@@ -80,9 +80,21 @@ const addLinks = () => {
   });
 };
 
+// Find the paginator element, at the bottom of the reviews.
+const findPaginator = () =>
+  document.querySelector(".MuiPagination-root.MuiPagination-text");
+
+// This needs to be a named function to avoid memory leaks; with an anonymous
+// or arrow function, the event handler will be duplicated.
+function paginatorClickHandler() {
+  runWhenReady(findDates, addLinks);
+}
+
 // Ricardo does things in a very "interesting" way. One such interesting thing
 // is to load review dates much later, then delete and immediately recreate the
 // item number elements once the date has been loaded. Therefore, we must wait
 // for the dates to load and for the item number elements to be removed and
 // recreated before modifying them.
 runWhenReady(findDates, addLinks);
+// Whenever the user goes to the next page of reviews, run the script again.
+findPaginator().addEventListener("click", paginatorClickHandler);
