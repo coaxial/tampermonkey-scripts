@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Link ratings to ads
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Turn article numbers into links to the corresponding listing on the Ricardo.ch user's evaluations page.
 // @author       Coaxial
 // @match        https://www.ricardo.ch/*/shop/*/ratings*
@@ -80,9 +80,42 @@ const addLinks = () => {
   });
 };
 
+// Where the reviews are inserted, this is the furthest node that doesn't get
+// destroyed and recreated upon loading reviews or paging through reviews.
+const reviewsContainerNode = () => {
+  const classes = [
+    "MuiPaper-root",
+    "MuiPaper-elevation",
+    "MuiPaper-rounded",
+    "MuiPaper-elevation1",
+    "MuiCard-root",
+    "MuiGrid-root",
+    "MuiGrid-item",
+  ];
+  return document.querySelector(`.${classes.join(".")}`).parentElement
+    .parentElement;
+};
+
+const reviewsMutationHandler = (mutationList, observer) => {
+  mutationList.forEach((mutation) => {
+    const reviewListMutated =
+      mutation.type === "childList" &&
+      (mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0);
+    if (reviewListMutated) {
+      addLinks();
+    }
+  });
+};
+const reviewsMutationObserver = new MutationObserver(reviewsMutationHandler);
+// Observe the reviews container to add links when the next page is loaded
+// (when using the arrows from the paginator, at the bottom of the reviews
+// page)
+reviewsMutationObserver.observe(reviewsContainerNode(), { childList: true });
+
 // Ricardo does things in a very "interesting" way. One such interesting thing
 // is to load review dates much later, then delete and immediately recreate the
 // item number elements once the date has been loaded. Therefore, we must wait
 // for the dates to load and for the item number elements to be removed and
 // recreated before modifying them.
+// FIXME: Use an observer for this instead.
 runWhenReady(findDates, addLinks);
