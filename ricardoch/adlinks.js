@@ -107,7 +107,8 @@ const reviewsContainerNode = () => {
 const callback = (mutationList, observer) => {
   mutationList.forEach((mutation) => {
     const reviewListMutated =
-      mutation.type === "childList" && mutation.addedNodes.length > 0;
+      mutation.type === "childList" &&
+      (mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0);
     if (reviewListMutated) {
       console.debug({ mutation });
       console.debug("reviews mutated");
