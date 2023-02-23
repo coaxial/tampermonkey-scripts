@@ -106,7 +106,7 @@ const reviewsMutationHandler = (mutationList, observer) => {
       mutation.type === "childList" &&
       (mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0);
     if (reviewListMutated) {
-      runWhenReady(findDates, addLinks);
+      addLinks();
     }
   });
 };
