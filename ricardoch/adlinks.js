@@ -84,12 +84,8 @@ const addLinks = () => {
 const findPaginator = () =>
   document.querySelector(".MuiPagination-root.MuiPagination-text");
 
-// This needs to be a named function to avoid memory leaks; with an anonymous
-// or arrow function, the event handler will be duplicated.
-function paginatorClickHandler() {
-  runWhenReady(findDates, addLinks);
-}
-
+// Where the reviews are inserted, this is the furthest node that doesn't get
+// destroyed and recreated upon loading reviews or paging through reviews.
 const reviewsContainerNode = () => {
   const classes = [
     "MuiPaper-root",
@@ -104,26 +100,26 @@ const reviewsContainerNode = () => {
     .parentElement;
 };
 
-const callback = (mutationList, observer) => {
+const reviewsMutationHandler = (mutationList, observer) => {
   mutationList.forEach((mutation) => {
     const reviewListMutated =
       mutation.type === "childList" &&
       (mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0);
     if (reviewListMutated) {
-      console.debug({ mutation });
-      console.debug("reviews mutated");
       runWhenReady(findDates, addLinks);
     }
   });
 };
-const observer = new MutationObserver(callback);
-// Whenever the user goes to the next page of reviews, run the script again.
-// findPaginator().addEventListener("click", paginatorClickHandler);
-observer.observe(reviewsContainerNode(), { childList: true });
+const reviewsMutationObserver = new MutationObserver(reviewsMutationHandler);
+// Observe the reviews container to add links when the next page is loaded
+// (when using the arrows from the paginator, at the bottom of the reviews
+// page)
+reviewsMutationObserver.observe(reviewsContainerNode(), { childList: true });
 
 // Ricardo does things in a very "interesting" way. One such interesting thing
 // is to load review dates much later, then delete and immediately recreate the
 // item number elements once the date has been loaded. Therefore, we must wait
 // for the dates to load and for the item number elements to be removed and
 // recreated before modifying them.
+// FIXME: Use an observer for this instead.
 runWhenReady(findDates, addLinks);
