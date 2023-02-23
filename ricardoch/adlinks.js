@@ -80,10 +80,6 @@ const addLinks = () => {
   });
 };
 
-// Find the paginator element, at the bottom of the reviews.
-const findPaginator = () =>
-  document.querySelector(".MuiPagination-root.MuiPagination-text");
-
 // Where the reviews are inserted, this is the furthest node that doesn't get
 // destroyed and recreated upon loading reviews or paging through reviews.
 const reviewsContainerNode = () => {
