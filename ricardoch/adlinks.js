@@ -17,26 +17,26 @@
 // Gives up after a minute.
 // Inspired from
 // https://github.com/Tampermonkey/tampermonkey/issues/1279#issuecomment-875386821
-const runWhenReady = (elementFinder, callback) => {
-  const tryNow = (attempt = 0) => {
-    const el = elementFinder();
-    const elFound = el.length > 0;
+// const runWhenReady = (elementFinder, callback) => {
+//   const tryNow = (attempt = 0) => {
+//     const el = elementFinder();
+//     const elFound = el.length > 0;
 
-    if (elFound) {
-      callback();
-    } else {
-      if (attempt == 33) {
-        console.warn(
-          `No matching elements after ${attempt} attempts, giving up.`
-        );
-      } else {
-        setTimeout(() => tryNow(attempt + 1), 250 * Math.pow(1.1, attempt));
-      }
-    }
-  };
+//     if (elFound) {
+//       callback();
+//     } else {
+//       if (attempt == 33) {
+//         console.warn(
+//           `No matching elements after ${attempt} attempts, giving up.`
+//         );
+//       } else {
+//         setTimeout(() => tryNow(attempt + 1), 250 * Math.pow(1.1, attempt));
+//       }
+//     }
+//   };
 
-  tryNow();
-};
+//   tryNow();
+// };
 
 const findDates = () => {
   // Array.prototype.join only inserts between elements but doesn't prepend.
@@ -80,32 +80,50 @@ const addLinks = () => {
   });
 };
 
-// // Where the reviews are inserted, this is the furthest node that doesn't get
-// // destroyed and recreated upon loading reviews or paging through reviews.
-// const reviewsContainerNode = () => {
-//   const classes = [
-//     "MuiPaper-root",
-//     "MuiPaper-elevation",
-//     "MuiPaper-rounded",
-//     "MuiPaper-elevation1",
-//     "MuiCard-root",
-//     "MuiGrid-root",
-//     "MuiGrid-item",
-//   ];
-//   return document.querySelector(`.${classes.join(".")}`).parentElement
-//     .parentElement;
-// };
-const reviewsContainerNode = () =>
-  document.querySelector("[data-testid=ratings]");
-const reviewsContainerMutationHandler = (mutationList, observer) => {
+// Where the reviews are inserted, this is the furthest node that doesn't get
+// destroyed and recreated upon loading reviews or paging through reviews.
+const reviewsTableContainer = () => {
+  const classes = [
+    "MuiPaper-root",
+    "MuiPaper-elevation",
+    "MuiPaper-rounded",
+    "MuiPaper-elevation1",
+    "MuiCard-root",
+    "MuiGrid-root",
+    "MuiGrid-item",
+  ];
+  return document.querySelector(`.${classes.join(".")}`).parentElement
+    .parentElement;
+};
+
+// This contains the reviews when initially loading the page. This is where the
+// dates will be added by the webapp later.
+const reviewsDetailContainer = document.querySelector(
+  "[data-testid=ratings] hr"
+).parentElement;
+
+// Handles when the reviews are refreshed (either once the dates are added on
+// first page load, or when the list is updated when paging through reviews).
+const reviewsRefreshedHandler = (mutationList, observer) => {
   mutationList.forEach((mutation) => {
-    console.debug({ mutation });
+    console.debug("added links via observer");
+    addLinks();
+    observer.disconnect();
   });
 };
-const reviewsContainerMutationObserver = new MutationObserver(
-  reviewsContainerMutationHandler
-);
-reviewsContainerNode.observe(reviewsContainerNode(), { childList: true });
+// Watch for the dates being added to the reviews on the initial page load and
+// run the handler to modify them.
+const reviewsDetailObserver = new MutationObserver(reviewsRefreshedHandler);
+reviewsDetailObserver.observe(reviewsDetailContainer, {
+  childList: true,
+  subtree: true,
+});
+
+const reviewsPagechangeObserver = new MutationObserver(reviewsMutationHandler);
+// // Observe the reviews container to add links when the next page is loaded
+// // (when using the arrows from the paginator, at the bottom of the reviews
+// // page)
+reviewsPagechangeObserver.observe(reviewsTableContainer, { childList: true });
 
 // const reviewsMutationHandler = (mutationList, observer) => {
 //   mutationList.forEach((mutation) => {
