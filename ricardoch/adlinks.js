@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Link ratings to ads
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.4.1
 // @description  Turn article numbers into links to the corresponding listing on the Ricardo.ch user's evaluations page.
 // @author       Coaxial
 // @match        https://www.ricardo.ch/*/shop/*/ratings*
