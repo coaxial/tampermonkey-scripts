@@ -100,9 +100,16 @@ const dateLoadedHandler = (mutationList, observer) => {
 // This runs when the user pages through the reviews using the paginator below
 // the reviews.
 const paginatorHandler = (mutationList, observer) => {
-  console.debug("page refreshed, adding links");
-  addLinks(findArticleNumbers());
-  ricardoCantCss(findDates());
+  // When changing pages, the reviews are all removed first. Then the next page
+  // of reviews is added.
+  // Only run when the next page of reviews is added since there is nothing to
+  // do when they're removed anyway.
+  const mutationAddedNewReviews = mutationList[0].addedNodes.length > 0;
+
+  if (mutationAddedNewReviews) {
+    addLinks(findArticleNumbers());
+    ricardoCantCss(findDates());
+  }
 };
 
 const datesLoadObserver = new MutationObserver(dateLoadedHandler);
@@ -111,7 +118,9 @@ datesLoadObserver.observe(reviewsDateContainer, {
   childList: true,
   subtree: true,
 });
-paginatorObserver.observe(paginatorHandler, { childList: true, subtree: true });
+paginatorObserver.observe(reviewsRootContainer(), {
+  childList: true,
+});
 
 // In case dates were populated right away, without triggering the observer.
 if (findDates().length > 0) {
