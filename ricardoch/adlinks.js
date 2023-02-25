@@ -133,7 +133,7 @@ const reviewsDateContainer = document.querySelector(
   "[data-testid=ratings] hr"
 ).parentElement;
 
-// This runs when the page is first loaded and the date have arrived.
+// This runs when the page is first loaded and the dates have arrived.
 const dateLoadedHandler = (mutationList, observer) => {
   // Just to be sure this didn't trigger but the dates haven't been populated
   // for some reason.
