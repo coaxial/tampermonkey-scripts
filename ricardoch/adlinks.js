@@ -86,7 +86,7 @@ const ricardoCantCss = (elements) => {
   // Remove useless negative margins so that the item number isn't covered by
   // another element and is clickable.
   // CSS is hard I guess.
-  elements.map((el) => {
+  elements.forEach((el) => {
     el.parentElement.style["padding-top"] = 0;
     el.parentElement.style["padding-left"] = 0;
     el.parentElement.parentElement.style["margin-top"] = 0;
@@ -96,7 +96,7 @@ const ricardoCantCss = (elements) => {
 
 // Add links to the given articleNumElements
 const addLinks = (articleNumElements) => {
-  articleNumElements.map((el) => {
+  articleNumElements.forEach((el) => {
     // Match current page language to link to the item in the corresponding
     // language.
     // The language is embedded in the current page's URL.
