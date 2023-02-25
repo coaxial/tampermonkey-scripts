@@ -138,10 +138,8 @@ const dateLoadedHandler = (mutationList, observer) => {
   // Just to be sure this didn't trigger but the dates haven't been populated
   // for some reason.
   if (dateElements().length > 0) {
-    console.debug("dates arrived, adding links");
     addLinks(articleNumberElements());
     ricardoCantCss(dateElements());
-    console.debug("disconnect from dates");
     // This observer is only useful for the initial page load. After that, we
     // can detect when the user pages through the reviews.
     // Disconnect this observer to avoid duplicate triggers (the page change
@@ -178,7 +176,6 @@ paginatorObserver.observe(reviewsRootContainer(), {
 // In case dates were populated right away, without triggering the observer.
 const checkForEarlyDates = () => {
   if (dateElements().length > 0) {
-    console.debug("dates loaded with page");
     // We don't need to wait for dates, they're already here. This also avoids
     // triggering the callback when paging through the reviews and adding the
     // links.
