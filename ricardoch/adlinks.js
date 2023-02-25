@@ -57,12 +57,8 @@
 // an issue where the date element overlaps the article number. This makes the
 // article number impossible to click because it comes before the date element
 // in the DOM and is therefore below the date element's padding. That is the
-// purpose for the `ricardoCantCss` function, which runs after the date
-// elements are loaded.
-//
-//
-// This script is unnecessarily complicated because of the way the ricardo.ch
-// webapp does things... Oh well, I made it work anyway :)
+// purpose for the `fixCSS` function, which runs after the date elements are
+// loaded.
 
 // Find all elements containing the reviews' dates.
 const dateElements = () => {
@@ -80,12 +76,11 @@ const articleNumberElements = () => {
   );
 };
 
-// CSS is hard, fix margins and padding so the articule numbers are clickable.
+// Fix margins and padding so the article numbers are clickable.
 // NOTE: elements should be dates, not article numbers.
-const ricardoCantCss = (elements) => {
+const fixCSS = (elements) => {
   // Remove useless negative margins so that the item number isn't covered by
   // another element and is clickable.
-  // CSS is hard I guess.
   elements.forEach((el) => {
     el.parentElement.style["padding-top"] = 0;
     el.parentElement.style["padding-left"] = 0;
@@ -139,7 +134,7 @@ const dateLoadedHandler = (mutationList, observer) => {
   // for some reason.
   if (dateElements().length > 0) {
     addLinks(articleNumberElements());
-    ricardoCantCss(dateElements());
+    fixCSS(dateElements());
     // This observer is only useful for the initial page load. After that, we
     // can detect when the user pages through the reviews.
     // Disconnect this observer to avoid duplicate triggers (the page change
@@ -159,7 +154,7 @@ const paginatorHandler = (mutationList, observer) => {
 
   if (mutationAddedNewReviews) {
     addLinks(articleNumberElements());
-    ricardoCantCss(dateElements());
+    fixCSS(dateElements());
   }
 };
 
@@ -181,7 +176,7 @@ const checkForEarlyDates = () => {
     // links.
     datesLoadObserver.disconnect();
     addLinks(articleNumberElements());
-    ricardoCantCss(dateElements());
+    fixCSS(dateElements());
   }
 };
 
