@@ -13,7 +13,7 @@
 "use strict";
 
 // Find all elements containing the reviews' dates.
-const findDates = () => {
+const dateElements = () => {
   // Array.prototype.join only inserts between elements but doesn't prepend.
   const dateElClasses = `.${["jss89", "jss119", "jss99"].join(".")}`;
 
@@ -21,7 +21,7 @@ const findDates = () => {
 };
 
 // Find all elements containing the reviews' article number.
-const findArticleNumbers = () => {
+const articleNumberElements = () => {
   // reviews are within `p` elements, but not all `p` are reviews.
   return [...document.querySelectorAll("p")].filter((e) =>
     new RegExp("(N° d'article|Art.-Nr.|No.-art.) [0-9]+", "g").test(e.innerText)
@@ -84,10 +84,10 @@ const reviewsDateContainer = document.querySelector(
 const dateLoadedHandler = (mutationList, observer) => {
   // Just to be sure this didn't trigger but the dates haven't been populated
   // for some reason.
-  if (findDates().length > 0) {
+  if (dateElements().length > 0) {
     console.debug("dates arrived, adding links");
-    addLinks(findArticleNumbers());
-    ricardoCantCss(findDates());
+    addLinks(articleNumberElements());
+    ricardoCantCss(dateElements());
     console.debug("disconnect from dates");
     // This observer is only useful for the initial page load. After that, we
     // can detect when the user pages through the reviews.
@@ -107,8 +107,8 @@ const paginatorHandler = (mutationList, observer) => {
   const mutationAddedNewReviews = mutationList[0].addedNodes.length > 0;
 
   if (mutationAddedNewReviews) {
-    addLinks(findArticleNumbers());
-    ricardoCantCss(findDates());
+    addLinks(articleNumberElements());
+    ricardoCantCss(dateElements());
   }
 };
 
@@ -123,57 +123,10 @@ paginatorObserver.observe(reviewsRootContainer(), {
 });
 
 // In case dates were populated right away, without triggering the observer.
-if (findDates().length > 0) {
+if (dateElements().length > 0) {
   console.debug("dates loaded with page");
   // We don't need to wait for dates, they're already here.
   datesLoadObserver.disconnect();
-  addLinks(findArticleNumbers());
-  ricardoCantCss(findDates());
+  addLinks(articleNumberElements());
+  ricardoCantCss(dateElements());
 }
-
-// // Handles when the reviews are refreshed (either once the dates are added on
-// // first page load, or when the list is updated when paging through reviews).
-// const reviewsRefreshedHandler = (mutationList, observer) => {
-//   mutationList.forEach((mutation) => {
-//     console.debug("added links via observer");
-//     addLinks();
-//     observer.disconnect();
-//   });
-// };
-// // Watch for the dates being added to the reviews on the initial page load and
-// // run the handler to modify them.
-// const reviewsDetailObserver = new MutationObserver(reviewsRefreshedHandler);
-// reviewsDetailObserver.observe(reviewsDetailContainer, {
-//   childList: true,
-//   subtree: true,
-// });
-
-// const reviewsPagechangeObserver = new MutationObserver(reviewsRefreshedHandler);
-// // // Observe the reviews container to add links when the next page is loaded
-// // // (when using the arrows from the paginator, at the bottom of the reviews
-// // // page)
-// reviewsPagechangeObserver.observe(reviewsTableContainer(), { childList: true });
-
-// // const reviewsMutationHandler = (mutationList, observer) => {
-// //   mutationList.forEach((mutation) => {
-// //     const reviewListMutated =
-// //       mutation.type === "childList" &&
-// //       (mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0);
-// //     if (reviewListMutated) {
-// //       addLinks();
-// //     }
-// //   });
-// // };
-// // const reviewsMutationObserver = new MutationObserver(reviewsMutationHandler);
-// // // Observe the reviews container to add links when the next page is loaded
-// // // (when using the arrows from the paginator, at the bottom of the reviews
-// // // page)
-// // reviewsMutationObserver.observe(reviewsContainerNode(), { childList: true });
-
-// // // Ricardo does things in a very "interesting" way. One such interesting thing
-// // // is to load review dates much later, then delete and immediately recreate the
-// // // item number elements once the date has been loaded. Therefore, we must wait
-// // // for the dates to load and for the item number elements to be removed and
-// // // recreated before modifying them.
-// // // FIXME: Use an observer for this instead.
-// // runWhenReady(findDates, addLinks);
