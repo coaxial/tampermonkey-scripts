@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Outline Amazon-owned bookstores
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
+// @version      1.0.1
 // @description  Warn about Amazon-owned stores in results list to avoid buying from them.
 // @author       Coaxial
 // @match        https://www.bookfinder.com/search/*
@@ -23,9 +23,9 @@ const fadedOpacity = 0.25;
 const warningFragment = () => {
   // Will result in
   // <span style="font-weight: bold;">
-  //   <span style="font-size: 1.25em;">⚠️🍆  </span>
+  //   <span style="font-size: 1.25em;">⚠️  </span>
   //   <span>Amazon-owned business</span>
-  //   <span style="font-size: 1.25em;"> 🍆⚠️</span>
+  //   <span style="font-size: 1.25em;"> ⚠️</span>
   // </span>
   // <br>
   const fragment = document.createDocumentFragment();
@@ -33,12 +33,12 @@ const warningFragment = () => {
   // Split in several elements to have discrete <span>s to make emojis a little
   // bigger.
   const prefix = document.createElement("span");
-  prefix.textContent = "⚠️🍆 ";
+  prefix.textContent = "⚠️ ";
   prefix.style.fontSize = "1.25em";
   const note = document.createElement("span");
   note.textContent = "Amazon-owned business";
   const suffix = document.createElement("span");
-  suffix.textContent = " 🍆⚠️";
+  suffix.textContent = " ⚠️";
   suffix.style.fontSize = "1.25em";
   fragment.appendChild(document.createElement("br"));
   container.appendChild(prefix);
