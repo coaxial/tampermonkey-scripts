@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Outline Amazon-owned bookstores
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
+// @version      1.0.1
 // @description  Warn about Amazon-owned stores in results list to avoid buying from them.
 // @author       Coaxial
 // @match        https://www.bookfinder.com/search/*
